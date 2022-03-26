@@ -1,0 +1,95 @@
+PRIMES PRODUCT IN THE RANGE OF L-R:
+Given two numbers L and R (inclusive) find the product of primes within this range. Print the product modulo 109+7. If there are no primes in that range you must print 1.
+
+Example 1:
+
+Input: L = 1, R = 10
+Output: 210
+Explaination: The prime numbers are 
+2, 3, 5 and 7.
+Example 2:
+
+Input: L = 1, R = 20
+Output: 9699690
+Explaination: The primes are 2, 3, 
+5, 7, 11, 13, 17 and 19.
+Your Task:
+You do not need to read input or print anything. Your task is to complete the function primeProduct() which takes L and R and returns the product of the primes within the range. If there are no primes in that range then return 1.
+
+Expected Time Complexity: O((R-L)*(logR))
+Expected Auxiliary Space: O(sqrt(R))
+
+Constraints:
+1 ≤ L ≤ R ≤ 109
+0 ≤ L - R ≤ 106  
+USING SEGMENTED SEIVE WE CAN GENERATE THE PRIMES UPTO THE RANGE OF 10^9:
+
+SOLUTION:
+
+#include<bits/stdc++.h>
+using namespace std;
+int N=1000001;
+int seive[1000001];
+void gen_seive()
+{
+    for(int i=0;i<N;i++)
+    {
+        seive[i]=1;
+    }
+    for(int i=2;i*i<N;i++)
+    {
+        if(seive[i]==1)
+        {
+            for(int j=i*i;j<N;j+=i)
+            {
+                seive[j]=0;
+            }
+        }
+    }
+}
+vector<int> gen_primes(int num)
+{
+    vector<int>ds;
+    for(int i=2;i<=num;i++)
+    {
+        if(seive[i]==1)
+        {
+            ds.push_back(i);
+        }
+    }
+    return ds;
+}
+int main()
+{
+    gen_seive();
+    int t;
+    cin>>t;
+    while(t--)
+    {
+        int l,r;
+        cin>>l>>r;
+        vector<int>dj=gen_primes(sqrt(r)+1);
+        vector<int>dummy(r-l+1,1);
+        for(auto it:dj) //2 3 5 7 11
+        {
+            int firstmul=0;
+            if((l/it)*it<l){
+                firstmul=((l/it)+1)*it;
+            }
+            else{
+                firstmul=((l/it)*it);
+            }
+            for(int j=max(firstmul,it*it);j<=r;j+=it)
+            {
+                dummy[j-l]=0;
+            }
+        }
+        for(int i=0;i<r-l+1;i++)
+        {
+            if(dummy[i]==1)
+            {
+                cout<<l+i<<" ";
+            }
+        }
+    }
+}
